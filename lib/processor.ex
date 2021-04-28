@@ -30,6 +30,7 @@ defmodule Processor do
   end
 
   def returnFromSubroutine(state) do
-
+    [head | tail] = Map.fetch!(state,:stack)
+    Map.put(Map.put(Map.put(state,:programCounter,head),:stack,tail),:stackPointer,Map.fetch!(state,:stackPointer)-1)
   end
 end

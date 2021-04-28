@@ -24,4 +24,8 @@ defmodule ProcessorTest do
     assert Processor.getInstructionNibbles({0x0F,0x0F}) == {0x00,0x0F,0x00,0x0F}
     assert Processor.getInstructionNibbles({0xF0,0xF0}) == {0x0F,0x00,0x0F,0x00}
   end
+  test "Return from subroutine" do
+    state = %{:stackPointer=>1,:stack=>[22]}
+    assert Processor.returnFromSubroutine(state) == %{:stackPointer=>0,:stack=>[],:programCounter=>22}
+  end
 end

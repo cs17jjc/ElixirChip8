@@ -1,7 +1,15 @@
 defmodule Processor do
   use Bitwise
   def emptyState do
-    {0, 0, [], List.duplicate(0, 16), 0, 0, 0, %{}}
+    %{
+      :programCounter=>0,
+      :stackPointer=>0,
+      :stack=>[],
+      :registers=>List.duplicate(0, 16),
+      :iRegister=> 0,
+      :delay=>0,
+      :sound=>0,
+      :memory=>%{}}
   end
   def getInstruction(programCounter, memory) do
       upper = Map.fetch(memory,programCounter)
@@ -19,5 +27,9 @@ defmodule Processor do
     lowNibble = (elem(instruction,1) >>> 4) &&& 0x0F
     lowestNibble = elem(instruction,1) &&& 0x0F
     {highestNibble,highNibble,lowNibble,lowestNibble}
+  end
+
+  def returnFromSubroutine(state) do
+
   end
 end

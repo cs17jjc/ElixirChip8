@@ -38,4 +38,8 @@ defmodule ProcessorTest do
   test "Call addr" do
     assert Processor.callAddr(%{:programCounter=>0x00,:stackPointer=>0,:stack=>[]},0xC,0xB,0xA) == %{:programCounter=>0xCBA,:stackPointer=>1,:stack=>[0x00]}
   end
+  test "Skip not equal" do
+    assert Processor.skipNextInstruction(%{:programCounter=>0x00,:registers=>[0x01]},0x00,0x0,0x1) == %{:programCounter=>0x00,:registers=>[1]}
+    assert Processor.skipNextInstruction(%{:programCounter=>0x00,:registers=>[0x01]},0x00,0x0,0x0) == %{:programCounter=>0x02,:registers=>[1]}
+  end
 end

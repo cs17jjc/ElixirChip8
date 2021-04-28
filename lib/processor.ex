@@ -48,4 +48,11 @@ defmodule Processor do
     incStackPtr = Map.put(pcOnStack,:stackPointer,Map.fetch!(pcOnStack,:stackPointer)+1)
     Map.put(incStackPtr,:programCounter,nibblesToNumber([highNibble,lowNibble,lowestNibble]))
   end
+
+  def skipNextInstruction(state,vx,lowNibble,lowestNibble) do
+    cond do
+      Enum.fetch!(Map.fetch!(state,:registers),vx) != nibblesToNumber([lowNibble,lowestNibble]) -> Map.put(state,:programCounter,Map.fetch!(state,:programCounter)+2)
+      true -> state
+    end
+  end
 end

@@ -33,4 +33,19 @@ defmodule Processor do
     [head | tail] = Map.fetch!(state,:stack)
     Map.put(Map.put(Map.put(state,:programCounter,head),:stack,tail),:stackPointer,Map.fetch!(state,:stackPointer)-1)
   end
+
+  def nibblesToNumber(nibbleList) do
+    withIndex = Enum.with_index(Enum.reverse(nibbleList))
+    values = Enum.map(withIndex,fn t -> elem(t,0) <<< (elem(t,1)*4) end)
+    Enum.sum(values)
+  end
+
+  def jumpToAddr(state,highNibble,lowNibble,lowestNibble) do
+    Map.put(state,:programCounter,nibblesToNumber([highNibble,lowNibble,lowestNibble]))
+  end
+  def callAddr(state,highNibble,lowNibble,lowestNibble) do
+    pcOnStack = Map.put(state,:stack,[Map.fetch!(state,:programCounter) | Map.fetch!(state,:stack)])
+    incStackPtr = Map.put(pcOnStack,:stackPointer,Map.fetch!(pcOnStack,:stackPointer)+1)
+    Map.put(incStackPtr,:programCounter,nibblesToNumber([highNibble,lowNibble,lowestNibble]))
+  end
 end

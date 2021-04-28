@@ -28,4 +28,14 @@ defmodule ProcessorTest do
     state = %{:stackPointer=>1,:stack=>[22]}
     assert Processor.returnFromSubroutine(state) == %{:stackPointer=>0,:stack=>[],:programCounter=>22}
   end
+  test "Nibbles to value" do
+    assert Processor.nibblesToNumber([0xF,0xF]) == 0xFF
+    assert Processor.nibblesToNumber([0xA,0xB,0xC,0xD]) == 0xABCD
+  end
+  test "Jump to addr" do
+    assert Map.fetch(Processor.jumpToAddr(%{:programCounter=>0x000},0xC,0xB,0xA),:programCounter) == {:ok,0xCBA}
+  end
+  test "Call addr" do
+    assert Processor.callAddr(%{:programCounter=>0x00,:stackPointer=>0,:stack=>[]},0xC,0xB,0xA) == %{:programCounter=>0xCBA,:stackPointer=>1,:stack=>[0x00]}
+  end
 end

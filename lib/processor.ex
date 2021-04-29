@@ -49,10 +49,32 @@ defmodule Processor do
     Map.put(incStackPtr,:programCounter,nibblesToNumber([highNibble,lowNibble,lowestNibble]))
   end
 
-  def skipNextInstruction(state,vx,lowNibble,lowestNibble) do
+  def skipNotEqual(state,vx,lowNibble,lowestNibble) do
     cond do
       Enum.fetch!(Map.fetch!(state,:registers),vx) != nibblesToNumber([lowNibble,lowestNibble]) -> Map.put(state,:programCounter,Map.fetch!(state,:programCounter)+2)
       true -> state
     end
+  end
+  def skipEqual(state,vx,lowNibble,lowestNibble) do
+    cond do
+      Enum.fetch!(Map.fetch!(state,:registers),vx) == nibblesToNumber([lowNibble,lowestNibble]) -> Map.put(state,:programCounter,Map.fetch!(state,:programCounter)+2)
+      true -> state
+    end
+  end
+  def skipEqualRegisters(state,vx,vy) do
+    cond do
+      Enum.fetch!(Map.fetch!(state,:registers),vx) == Enum.fetch!(Map.fetch!(state,:registers),vy) -> Map.put(state,:programCounter,Map.fetch!(state,:programCounter)+2)
+      true -> state
+    end
+  end
+
+  def loadValueRegisters(state,vx,lowNibble,lowestNibble) do
+    Map.put(state,:registers,List.replace_at(Map.fetch!(state,:registers),vx,nibblesToNumber([lowNibble,lowestNibble])))
+  end
+  def addValueRegisters(state,vx,lowNibble,lowestNibble) do
+    registers = Map.fetch!(state,:registers)
+    oldValue = Enum.fetch!(registers,vx)
+    newValue = oldValue + nibblesToNumber([lowNibble,lowestNibble])
+    Map.put(state,:registers,List.replace_at(registers,vx,newValue))
   end
 end

@@ -39,7 +39,23 @@ defmodule ProcessorTest do
     assert Processor.callAddr(%{:programCounter=>0x00,:stackPointer=>0,:stack=>[]},0xC,0xB,0xA) == %{:programCounter=>0xCBA,:stackPointer=>1,:stack=>[0x00]}
   end
   test "Skip not equal" do
-    assert Processor.skipNextInstruction(%{:programCounter=>0x00,:registers=>[0x01]},0x00,0x0,0x1) == %{:programCounter=>0x00,:registers=>[1]}
-    assert Processor.skipNextInstruction(%{:programCounter=>0x00,:registers=>[0x01]},0x00,0x0,0x0) == %{:programCounter=>0x02,:registers=>[1]}
+    assert Processor.skipNotEqual(%{:programCounter=>0x00,:registers=>[0x01]},0x00,0x0,0x1) == %{:programCounter=>0x00,:registers=>[1]}
+    assert Processor.skipNotEqual(%{:programCounter=>0x00,:registers=>[0x01]},0x00,0x0,0x0) == %{:programCounter=>0x02,:registers=>[1]}
+  end
+  test "Skip equal" do
+    assert Processor.skipEqual(%{:programCounter=>0x00,:registers=>[0x01]},0x00,0x0,0x1) == %{:programCounter=>0x02,:registers=>[1]}
+    assert Processor.skipEqual(%{:programCounter=>0x00,:registers=>[0x01]},0x00,0x0,0x0) == %{:programCounter=>0x00,:registers=>[1]}
+  end
+  test "Skip equal registers" do
+    assert Processor.skipEqualRegisters(%{:programCounter=>0x00,:registers=>[0x01,0x01]},0x00,0x01) == %{:programCounter=>0x02,:registers=>[0x01,0x01]}
+    assert Processor.skipEqualRegisters(%{:programCounter=>0x00,:registers=>[0x01,0x00]},0x00,0x01) == %{:programCounter=>0x00,:registers=>[0x01,0x00]}
+  end
+  test "Load into regsister" do
+    assert Processor.loadValueRegisters(%{:registers=>[0x00,0x00]},0x01,0xA,0xA) == %{:registers=>[0,0xAA]}
+    assert Processor.loadValueRegisters(%{:registers=>[0x00,0x00,0x00]},0x01,0x0,0xF) == %{:registers=>[0,0x0F,0]}
+  end
+  test "Add into regsister" do
+    assert Processor.addValueRegisters(%{:registers=>[0x00,0x00]},0x01,0xA,0xA) == %{:registers=>[0,0xAA]}
+    assert Processor.addValueRegisters(%{:registers=>[0x00,0x0F,0x00]},0x01,0x0,0x1) == %{:registers=>[0,0x10,0]}
   end
 end

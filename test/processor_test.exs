@@ -32,6 +32,9 @@ defmodule ProcessorTest do
     assert Processor.nibblesToNumber([0xF,0xF]) == 0xFF
     assert Processor.nibblesToNumber([0xA,0xB,0xC,0xD]) == 0xABCD
   end
+  test "Increment program counter" do
+    assert Processor.incrProgramCounter(%{:programCounter=>0}) == %{:programCounter=>2}
+  end
   test "Jump to addr" do
     assert Map.fetch(Processor.jumpToAddr(%{:programCounter=>0x000},0xC,0xB,0xA),:programCounter) == {:ok,0xCBA}
   end
@@ -51,11 +54,15 @@ defmodule ProcessorTest do
     assert Processor.skipEqualRegisters(%{:programCounter=>0x00,:registers=>[0x01,0x00]},0x00,0x01) == %{:programCounter=>0x00,:registers=>[0x01,0x00]}
   end
   test "Load into regsister" do
-    assert Processor.loadValueRegisters(%{:registers=>[0x00,0x00]},0x01,0xA,0xA) == %{:registers=>[0,0xAA]}
-    assert Processor.loadValueRegisters(%{:registers=>[0x00,0x00,0x00]},0x01,0x0,0xF) == %{:registers=>[0,0x0F,0]}
+    assert Processor.loadValueToRegisters(%{:registers=>[0x00,0x00]},0x01,0xA,0xA) == %{:registers=>[0,0xAA]}
+    assert Processor.loadValueToRegisters(%{:registers=>[0x00,0x00,0x00]},0x01,0x0,0xF) == %{:registers=>[0,0x0F,0]}
   end
   test "Add into regsister" do
     assert Processor.addValueRegisters(%{:registers=>[0x00,0x00]},0x01,0xA,0xA) == %{:registers=>[0,0xAA]}
     assert Processor.addValueRegisters(%{:registers=>[0x00,0x0F,0x00]},0x01,0x0,0x1) == %{:registers=>[0,0x10,0]}
   end
+  test "Load regsisters" do
+    assert Processor.loadValueRegisters(%{:registers=>[0x00,0x0F]},0x00,0x01) == %{:registers=>[0x0F,0x0F]}
+  end
+
 end

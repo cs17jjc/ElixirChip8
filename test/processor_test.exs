@@ -1,5 +1,6 @@
 defmodule ProcessorTest do
   use ExUnit.Case
+  use Bitwise
   doctest Processor
 
   test "Empty State" do
@@ -63,6 +64,21 @@ defmodule ProcessorTest do
   end
   test "Load regsisters" do
     assert Processor.loadValueRegisters(%{:registers=>[0x00,0x0F]},0x00,0x01) == %{:registers=>[0x0F,0x0F]}
+  end
+  test "or" do
+    assert Processor.orValueRegisters(%{:registers=>[0xAA,0x55]},0x00,0x01) == %{:registers=>[0xFF,0x55]}
+  end
+  test "and" do
+    assert Processor.andValueRegisters(%{:registers=>[0x03,0xF5]},0x00,0x01) == %{:registers=>[0x03&&&0xF5,0xF5]}
+  end
+  test "xor" do
+    assert Processor.xorValueRegisters(%{:registers=>[0x03,0xF5]},0x00,0x01) == %{:registers=>[0x03^^^0xF5,0xF5]}
+  end
+  test "add" do
+    assert Processor.addValueRegisters(%{:registers=>[0x0F,0x01]},0x00,0x01) == %{:registers=>[0x10,0x01]}
+  end
+  test "sub" do
+    assert Processor.subValueRegisters(%{:registers=>[0x10,0x01]},0x00,0x01) == %{:registers=>[0x0F,0x01]}
   end
 
 end

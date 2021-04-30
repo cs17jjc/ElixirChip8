@@ -105,4 +105,30 @@ defmodule Processor do
     newValue = Enum.fetch!(registers,vy)
     Map.put(state,:registers,List.replace_at(registers,vx,newValue))
   end
+
+  def orValueRegisters(state,vx,vy) do
+    registers = Map.fetch!(state,:registers)
+    newValue = Enum.fetch!(registers,vx) ||| Enum.fetch!(registers,vy)
+    Map.put(state,:registers,List.replace_at(registers,vx,newValue))
+  end
+  def andValueRegisters(state,vx,vy) do
+    registers = Map.fetch!(state,:registers)
+    newValue = Enum.fetch!(registers,vx) &&& Enum.fetch!(registers,vy)
+    Map.put(state,:registers,List.replace_at(registers,vx,newValue))
+  end
+  def xorValueRegisters(state,vx,vy) do
+    registers = Map.fetch!(state,:registers)
+    newValue = Enum.fetch!(registers,vx) ^^^ Enum.fetch!(registers,vy)
+    Map.put(state,:registers,List.replace_at(registers,vx,newValue))
+  end
+  def addValueRegisters(state,vx,vy) do
+    registers = Map.fetch!(state,:registers)
+    newValue = Enum.fetch!(registers,vx) + Enum.fetch!(registers,vy)
+    Map.put(state,:registers,List.replace_at(registers,vx,newValue))
+  end
+  def subValueRegisters(state,vx,vy) do
+    registers = Map.fetch!(state,:registers)
+    newValue = Enum.fetch!(registers,vx) - Enum.fetch!(registers,vy)
+    Map.put(state,:registers,List.replace_at(registers,vx,newValue))
+  end
 end
